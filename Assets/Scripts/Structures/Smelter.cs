@@ -1,8 +1,25 @@
-﻿using System.Collections;
+﻿/*
+* Aim of this script:
+Keep track of intake and output for this smelter.
+Use intake to create output after a given interval.
+Have a maximum capacity for each type of held material.
+Generate demand tickets for workers.
+
+ 
+* Current functionality:
+Lists of materials separated by type and dynamically updated.
+Uses intake to create output after a given interval.
+ 
+ 
+* Current issues:
+Does not have maximum capacity yet.
+
+
+ */
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace AIMining.Structures
 {
@@ -27,6 +44,7 @@ namespace AIMining.Structures
 
         void Update()
         {
+            //if copper or zinc are not at capacity, generate demand ticket
             if (!busy && copper.Count > 0 && zinc.Count > 0)
             {
                 StartCoroutine("Alchemise");
@@ -59,6 +77,8 @@ namespace AIMining.Structures
 
             brass.Add(MetalType.Brass);
             busy = false;
+
+            //generate demand ticket
         }
         #endregion
 
@@ -74,4 +94,9 @@ namespace AIMining.Structures
             }
         }
     }
+}
+
+public enum DemandTicket
+{
+
 }

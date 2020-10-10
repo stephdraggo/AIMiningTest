@@ -1,12 +1,28 @@
-﻿using AIMining.Structures;
+﻿/*
+* Aim of this script:
+Keep track of held material.
+Take or give material to relevent object on collision.
+ 
+ 
+* Current functionality:
+ 
+ 
+ 
+* Current issues:
+Cannot test functionality until movement script is made.
+
+
+ */
+using AIMining.Structures;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace AIMining.Workers
 {
-    [AddComponentMenu("Mining/Workers/Worker")]
-    public class Worker : MonoBehaviour
+    [AddComponentMenu("Mining/Workers/Actions")]
+    public class WorkerActions : MonoBehaviour
     {
         #region Variables
         private MetalType carrying;
