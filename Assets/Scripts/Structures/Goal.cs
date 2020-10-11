@@ -22,9 +22,10 @@ namespace AIMining.Structures
     [AddComponentMenu("Mining/Structures/Goal")]
     public class Goal : MonoBehaviour
     {
+        public static int brassCount;
         void Start()
         {
-
+            brassCount = 0;
         }
 
         void Update()

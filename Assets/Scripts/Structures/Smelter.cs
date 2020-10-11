@@ -18,7 +18,6 @@ Does not have maximum capacity yet.
  */
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
 
 namespace AIMining.Structures
@@ -28,28 +27,28 @@ namespace AIMining.Structures
     {
         #region Variables
         [Header("Smelter stats")]
+
+        [Tooltip("Available tasks for workers to collect from this structure.")]
+        public List<DemandTicket> demandTickets;
+
+        [Tooltip("Current materials being held here.")]
         public List<MetalType> brass;
-        public List<MetalType> copper, zinc;
+        [SerializeField, Tooltip("Current materials being held here.")]
+        private List<MetalType> copper, zinc;
 
-
-        [SerializeField, Tooltip("")]
+        [SerializeField, Tooltip("Number of seconds it takes to complete one operation.")]
         private float productionTime;
 
-        private bool busy;
         #endregion
         void Start()
         {
-            busy = false;
+            demandTickets.Add(DemandTicket.MineCopper);
+            demandTickets.Add(DemandTicket.MineZinc);
+            StartCoroutine("CheckStock"); //starts the stock check loop
+            StartCoroutine("Smelt"); //starts the smelting loop
         }
 
-        void Update()
-        {
-            //if copper or zinc are not at capacity, generate demand ticket
-            if (!busy && copper.Count > 0 && zinc.Count > 0)
-            {
-                StartCoroutine("Alchemise");
-            }
-        }
+
 
         #region Functions
         public void AddMaterial(MetalType mat)
@@ -67,24 +66,69 @@ namespace AIMining.Structures
         {
             brass.RemoveAt(0);
         }
-        private IEnumerator Alchemise()
+
+
+        /// <summary>
+        /// Waits until CanSmelt is true, then uses one of each ingredient to produce one product after a given interval.
+        /// </summary>
+        private IEnumerator Smelt()
         {
-            busy = true;
-            copper.RemoveAt(0);
-            zinc.RemoveAt(0);
+            while (gameObject)
+            {
+                yield return new WaitUntil(CanSmelt);
 
-            yield return new WaitForSeconds(productionTime);
+                copper.RemoveAt(0);
+                zinc.RemoveAt(0);
 
-            brass.Add(MetalType.Brass);
-            busy = false;
+                yield return new WaitForSeconds(productionTime);
 
-            //generate demand ticket
+                brass.Add(MetalType.Brass);
+                demandTickets.Add(DemandTicket.CollectBrass);
+            }
+
+        }
+        /// <summary>
+        /// Checks if there is stock and generates demand tickets if there is not enough.
+        /// </summary>
+        private IEnumerator CheckStock()
+        {
+            while (gameObject)
+            {
+                if (demandTickets.Count <= 20)
+                {
+                    if (copper.Count < 5)
+                    {
+                        demandTickets.Add(DemandTicket.MineCopper);
+                    }
+                    if (zinc.Count < 5)
+                    {
+                        demandTickets.Add(DemandTicket.MineZinc);
+                    }
+                }
+
+                yield return new WaitForSeconds(1);
+            }
+        }
+        /// <summary>
+        /// Returns true if there is enough stock to smelt, otherwise false.
+        /// </summary>
+        /// <returns>bool</returns>
+        private bool CanSmelt()
+        {
+            if (copper.Count > 0 && zinc.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
-
+#if UNITY_EDITOR
         private void OnGUI()
         {
-            if(GUI.Button(new Rect(10,10,100,20),"+1 copper"))
+            if (GUI.Button(new Rect(10, 10, 100, 20), "+1 copper"))
             {
                 copper.Add(MetalType.Copper);
             }
@@ -92,11 +136,19 @@ namespace AIMining.Structures
             {
                 zinc.Add(MetalType.Zinc);
             }
+
+            GUI.Box(new Rect(10, 70, 100, 20), (Goal.brassCount + " brass shipped"));
         }
+#endif
     }
 }
 
 public enum DemandTicket
 {
-
+    MineCopper,
+    MineZinc,
+    DeliverOre,
+    CollectBrass,
+    DeliverBrass,
+    None,
 }

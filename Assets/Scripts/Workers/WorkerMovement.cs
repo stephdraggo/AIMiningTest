@@ -14,6 +14,7 @@ None.
 
 
  */
+using AIMining.Structures;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,47 +24,80 @@ namespace AIMining.Workers
     [AddComponentMenu("Mining/Workers/Movement")]
     public class WorkerMovement : MonoBehaviour
     {
-        public Work task;
+        public DemandTicket ticket;
         public Vector3 targetLocation;
+        public float speed;
+
+        public GameObject copperMine, zincMine, smelterObject, goal;
+
+        private Smelter smelter;
+        private Rigidbody rigidBody;
         void Start()
         {
-            task = Work.MoveAside;
+            rigidBody = gameObject.GetComponent<Rigidbody>();
+            smelter = smelterObject.GetComponent<Smelter>();
         }
 
         private void Update()
         {
-            //if task is null
+            Move();
+            if (targetLocation == Vector3.zero)
+            {
+                ChooseTarget();
+            }
 
-                //if demand ticket is null
-
-                    //if demand ticket is not available
-
-                        //then MoveAside();
-
-                    //else if demand ticket is available
-
-                        //then take demand ticket
-
-                //else if demand ticket is not null
-                    
-                    //then task is next step of demand ticket
-
-            //else continue task
         }
-
-        private Vector3 MoveAside()
+        private void FixedUpdate()
         {
-            targetLocation = Vector3.zero;
-            return targetLocation;
+            ChooseTarget();
         }
+
+        private void Move()
+        {
+            rigidBody.velocity = (targetLocation - transform.position).normalized * speed;
+        }
+
+
+        public void ChooseTarget()
+        {
+            //assign target according to demand ticket
+            switch (ticket)
+            {
+                case DemandTicket.MineCopper:
+                    targetLocation = copperMine.transform.position;
+                    break;
+                case DemandTicket.MineZinc:
+                    targetLocation = zincMine.transform.position;
+                    break;
+                case DemandTicket.DeliverOre:
+                    targetLocation = smelterObject.transform.position;
+                    break;
+                case DemandTicket.CollectBrass:
+                    targetLocation = smelterObject.transform.position;
+                    break;
+                case DemandTicket.DeliverBrass:
+                    targetLocation = goal.transform.position;
+                    break;
+                case DemandTicket.None:
+                    //if demand ticket is available
+                    if (smelter.demandTickets.Count > 0)
+                    {
+                        //take a demand ticket
+                        ticket = smelter.demandTickets[0];
+                        //and remove ticket from smelter
+                        smelter.demandTickets.RemoveAt(0);
+                    }
+                    else //if demand ticket is not available
+                    {
+                        //then move aside
+                        targetLocation = new Vector3(20,.5f,0);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
     }
-}
-public enum Work
-{
-    TakeCopper,
-    TakeZinc,
-    GiveSmelter,
-    TakeSmelter,
-    GiveBrass,
-    MoveAside,
 }
