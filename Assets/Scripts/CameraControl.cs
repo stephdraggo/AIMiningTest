@@ -1,6 +1,4 @@
 ﻿using AIMining.Structures;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,12 +17,10 @@ namespace AIMining.Misc
                 cameras[i].enabled = false;
             }
         }
-
         void Update()
         {
             scoreText.text = Goal.brassCount.ToString() + "\nBrass Shipped.";
         }
-
         public void SwitchView(int index)
         {
             for (int i = 0; i < cameras.Length; i++)
@@ -33,7 +29,6 @@ namespace AIMining.Misc
             }
             cameras[index].enabled = true;
         }
-
         public void Quit()
         {
             Application.Quit();

@@ -2,23 +2,9 @@
 * Aim of this script:
 Keep track of held material.
 Take or give material to relevent object on collision.
- 
- 
-* Current functionality:
-Keeps track of held material.
-Takes and gives material to relevent object on collision.
- 
- 
-* Current issues:
-Needs comments.
-
-
- */
+*/
 using AIMining.Structures;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 namespace AIMining.Workers
 {
@@ -28,11 +14,7 @@ namespace AIMining.Workers
         #region Variables
         [SerializeField, Tooltip("Current material being carried.")]
         private MetalType carrying;
-
         private WorkerMovement moveS;
-
-
-
         public MetalType Carrying
         {
             get => carrying;
@@ -43,12 +25,6 @@ namespace AIMining.Workers
             moveS = gameObject.GetComponent<WorkerMovement>();
             carrying = MetalType.Empty;
         }
-
-        void Update()
-        {
-
-        }
-
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.gameObject.TryGetComponent(out SourceMine mine))
@@ -63,13 +39,12 @@ namespace AIMining.Workers
             {
                 GoalCollide();
             }
-
             //recalculate target location here
             moveS.ChooseTarget();
         }
         private void OnCollisionStay(Collision collision)
         {
-             if (collision.gameObject.TryGetComponent(out Smelter smelter))
+            if (collision.gameObject.TryGetComponent(out Smelter smelter))
             {
                 SmelterCollide(smelter);
             }

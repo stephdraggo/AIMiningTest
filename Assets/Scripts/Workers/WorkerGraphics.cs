@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AIMining.Workers
 {
@@ -20,7 +18,6 @@ namespace AIMining.Workers
 
             meshRenderer.material = materials[0];
         }
-
         void Update()
         {
             if(actionS.Carrying== MetalType.Empty)

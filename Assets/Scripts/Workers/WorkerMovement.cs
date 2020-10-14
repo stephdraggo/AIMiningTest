@@ -2,21 +2,8 @@
 * Aim of this script:
 Determine target location/object based on demand hierarchy.
 Move towards target.
- 
- 
-* Current functionality:
-None.
-
-
-
-* Current issues:
-
-
-
- */
+*/
 using AIMining.Structures;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace AIMining.Workers
@@ -37,7 +24,6 @@ namespace AIMining.Workers
             rigidBody = gameObject.GetComponent<Rigidbody>();
             smelter = smelterObject.GetComponent<Smelter>();
         }
-
         private void Update()
         {
             Move();
@@ -45,19 +31,15 @@ namespace AIMining.Workers
             {
                 ChooseTarget();
             }
-
         }
         private void FixedUpdate()
         {
             ChooseTarget();
         }
-
         private void Move()
         {
             rigidBody.velocity = (targetLocation - transform.position).normalized * speed;
         }
-
-
         public void ChooseTarget()
         {
             //assign target according to demand ticket

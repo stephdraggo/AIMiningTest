@@ -4,17 +4,6 @@ Keep track of intake and output for this smelter.
 Use intake to create output after a given interval.
 Have a maximum capacity for each type of held material.
 Generate demand tickets for workers.
-
- 
-* Current functionality:
-Lists of materials separated by type and dynamically updated.
-Uses intake to create output after a given interval.
- 
- 
-* Current issues:
-Does not have maximum capacity yet.
-
-
  */
 using System.Collections;
 using System.Collections.Generic;
@@ -47,9 +36,6 @@ namespace AIMining.Structures
             StartCoroutine("CheckStock"); //starts the stock check loop
             StartCoroutine("Smelt"); //starts the smelting loop
         }
-
-
-
         #region Functions
         public void AddMaterial(MetalType mat)
         {
@@ -66,8 +52,6 @@ namespace AIMining.Structures
         {
             brass.RemoveAt(0);
         }
-
-
         /// <summary>
         /// Waits until CanSmelt is true, then uses one of each ingredient to produce one product after a given interval.
         /// </summary>
